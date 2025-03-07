@@ -1,9 +1,5 @@
-import Image from "next/image";
+import Link from 'next/link';
 
-type Department = {
-  departmentId: number;
-  displayName: string;
-};
 
 async function fetchDepartments(): Promise<Department[]> {
   const res = await fetch('https://collectionapi.metmuseum.org/public/collection/v1/departments');
@@ -28,7 +24,9 @@ export default async function Home() {
       <main className="flex-grow w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
         {departments.map((department) => (
           <div key={department.departmentId} className="bg-gray-100 p-4 rounded shadow">
-            {department.displayName}
+            <Link href={`/department/${department.departmentId}`}>
+              {department.displayName}
+            </Link>
           </div>
         ))}
       </main>
