@@ -1,4 +1,4 @@
 type Department = {
-    departmentId: number;
-    displayName: string;
-  };
+  departmentId: number;
+  displayName: string;
+};
