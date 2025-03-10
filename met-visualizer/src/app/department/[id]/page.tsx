@@ -95,7 +95,7 @@ export default function DepartmentPage() {
             <h2>{obj.title || "Untitled"}</h2>
             <h3>{obj.artistDisplayName}</h3>
             <div className="w-full max-w-xs aspect-square relative">
-              <Image src={obj.primaryImageSmall} alt={obj.title} layout="fill" style={{ objectFit: "cover" }} />
+              <Image src={obj.primaryImageSmall} alt={obj.title} layout="fill" style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
             </div>
           </div>
         ))}
