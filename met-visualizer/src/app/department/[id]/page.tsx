@@ -98,10 +98,10 @@ export default function DepartmentPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+      <main className="flex-grow w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {currentObjects.map((obj) => (
-          <div key={obj.objectID} className="bg-gray-100 p-4 rounded shadow">
-            <h2>{obj.title || "Untitled"}</h2>
+          <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center">
+            <h2 className="truncate w-full text-center" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
             <h3>{obj.artistDisplayName}</h3>
             <div className="w-full max-w-xs aspect-square relative">
               <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
