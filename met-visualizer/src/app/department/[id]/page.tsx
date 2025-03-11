@@ -57,17 +57,26 @@ export default function DepartmentPage() {
   }, [id]);
 
   const totalPages = Math.ceil(totalObjects / itemsPerPage);
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const endIdx = startIdx + itemsPerPage;
-  const currentObjectIds = objectIDs.slice(startIdx, endIdx);
 
   useEffect(() => {
     async function loadObjects() {
-      const objectsData = (await Promise.all(currentObjectIds.map(id => fetchObject(id)))).filter(obj => obj.primaryImageSmall);
-      setObjects(objectsData);
+      let objectsData: FetchObjectResponse[] = [];
+      let startIdx = (currentPage - 1) * itemsPerPage;
+      let endIdx = startIdx + itemsPerPage;
+
+      while (objectsData.length < itemsPerPage && startIdx < objectIDs.length) {
+        const currentObjectIds = objectIDs.slice(startIdx, endIdx);
+        const fetchedObjects = await Promise.all(currentObjectIds.map(id => fetchObject(id)));
+        const validObjects = fetchedObjects.filter(obj => obj.primaryImageSmall);
+        objectsData = [...objectsData, ...validObjects];
+        startIdx = endIdx;
+        endIdx = startIdx + itemsPerPage;
+      }
+
+      setObjects(objectsData.slice(0, itemsPerPage));
     }
     loadObjects();
-  }, [currentObjectIds]);
+  }, [currentPage, objectIDs]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -95,7 +104,7 @@ export default function DepartmentPage() {
             <h2>{obj.title || "Untitled"}</h2>
             <h3>{obj.artistDisplayName}</h3>
             <div className="w-full max-w-xs aspect-square relative">
-              <Image src={obj.primaryImageSmall} alt={obj.title} layout="fill" style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
+              <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
             </div>
           </div>
         ))}
@@ -104,7 +113,7 @@ export default function DepartmentPage() {
       {/* Footer */}
       <footer className="w-full flex justify-between py-4">
         <button onClick={handlePrevPage} disabled={currentPage === 1} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Previous</button>
-        <p className="text-sm">Page {currentPage} of {totalPages}</p>
+        <p className="text-sm">{currentPage}</p>
         <button onClick={handleNextPage} disabled={currentPage === totalPages} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Next</button>
       </footer>
     </div>
