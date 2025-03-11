@@ -17,7 +17,10 @@ export default async function Home() {
     <div className="min-h-screen flex flex-col items-center p-8 sm:p-20">
       {/* Header */}
       <header className="w-full flex justify-center py-4">
-        <h1 className="text-2xl font-bold">Met Visualizer</h1>
+        <div className="flex flex-col items-center">
+          <h1 className="text-1xl font-bold">The</h1>
+          <h1 className="text-2xl font-bold">Met Visualizer</h1>
+        </div>
       </header>
 
       {/* Main Content */}
