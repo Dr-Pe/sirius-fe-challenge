@@ -12,6 +12,7 @@ interface FetchObjectsResponse {
 interface FetchObjectResponse {
   objectID: number;
   primaryImageSmall: string;
+  department: string;
   title: string;
   artistDisplayName: string;
 }
@@ -90,32 +91,40 @@ export default function DepartmentPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center p-8 sm:p-20">
-      {/* Header */}
-      <header className="w-full flex justify-center py-4">
-        <h1 className="text-2xl font-bold">{id}</h1>
-      </header>
+  if (currentObjects.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  } else {
+    return (
+      <div className="min-h-screen flex flex-col items-center p-8 sm:p-20">
+        {/* Header */}
+        <header className="w-full flex justify-center py-4">
+          <h1 className="text-2xl font-bold">{currentObjects[0].department}</h1>
+        </header>
 
-      {/* Main Content */}
-      <main className="flex-grow w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {currentObjects.map((obj) => (
-          <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center">
-            <h2 className="truncate w-full text-center" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
-            <h3>{obj.artistDisplayName}</h3>
-            <div className="w-full max-w-xs aspect-square relative">
-              <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
+        {/* Main Content */}
+        <main className="flex-grow w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          {currentObjects.map((obj) => (
+            <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center">
+              <h2 className="truncate w-full text-center" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
+              <h3>{obj.artistDisplayName}</h3>
+              <div className="w-full max-w-xs aspect-square relative">
+                <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
+              </div>
             </div>
-          </div>
-        ))}
-      </main>
+          ))}
+        </main>
 
-      {/* Footer */}
-      <footer className="w-full flex justify-between py-4">
-        <button onClick={handlePrevPage} disabled={currentPage === 1} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Previous</button>
-        <p className="text-sm">{currentPage}</p>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Next</button>
-      </footer>
-    </div>
-  );
+        {/* Footer */}
+        <footer className="w-full flex justify-between py-4">
+          <button onClick={handlePrevPage} disabled={currentPage === 1} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Previous</button>
+          <p className="text-sm">{currentPage}</p>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Next</button>
+        </footer>
+      </div>
+    );
+  }
 }
