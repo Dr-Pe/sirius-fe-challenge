@@ -38,3 +38,8 @@ header {
   left: 0;
   width: 100%;
 }
+
+button {
+  background: var(--color-met-red);
+  color: var(--color-white);
+}

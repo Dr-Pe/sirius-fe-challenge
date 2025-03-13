@@ -40,6 +40,7 @@ export default function DepartmentPage() {
   const [currentObjects, setCurrentObjects] = useState<MetObject[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+  const [isGridView, setIsGridView] = useState(true);
 
   useEffect(() => {
     async function loadObjectIds() {
@@ -99,18 +100,21 @@ export default function DepartmentPage() {
         </header>
 
         {/* Main Content */}
-        <main className="flex-grow w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {currentObjects.map((obj) => (
-            <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center cursor-pointer" onClick={() => window.location.href = `/object/${obj.objectID}`}>
-              <h2 className="truncate w-full text-center" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
-              <h3>{obj.artistDisplayName}</h3>
-              <div className="w-full max-w-xs aspect-square relative">
-                <Link href={`/object/${obj.objectID}`}>
-                  <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
-                </Link>
-              </div>
-            </div>
-          ))}
+        <main className="flex-grow w-full">
+          <div className="w-full flex justify-between items-center mb-4">
+            <input type="text" placeholder="Search..." className="p-2 border border-gray-300"
+            // onChange={(e) => {
+            //   const searchTerm = e.target.value.toLowerCase();
+            //   const filteredObjects = objectIDs.filter(async (id) => {
+            //     const obj = await fetchObject(id);
+            //     return obj.title.toLowerCase().includes(searchTerm) || obj.artistDisplayName.toLowerCase().includes(searchTerm);
+            //   });
+            //   setCurrentObjects(filteredObjects);
+            // }}
+            />
+            <ListGridButton isGridView={isGridView} setIsGridView={setIsGridView} />
+          </div>
+          <MetObjects objects={currentObjects} isGridView={isGridView} />
         </main>
 
         {/* Footer */}
@@ -122,4 +126,50 @@ export default function DepartmentPage() {
       </div>
     );
   }
+}
+
+function ListGridButton({ isGridView, setIsGridView }: { isGridView: boolean, setIsGridView: (isGridView: boolean) => void }) {
+  return (
+    <button onClick={() => setIsGridView(!isGridView)} className="px-4 py-2">
+      {isGridView ? "Switch to List View" : "Switch to Grid View"}
+    </button>
+  );
+}
+
+function MetObjects({ objects, isGridView }: { objects: MetObject[], isGridView: boolean }) {
+  return isGridView ? <GridView objects={objects} /> : <ListView objects={objects} />
+}
+
+function ListView({ objects }: { objects: MetObject[] }) {
+  return (
+    <div className="flex flex-col space-y-4">
+      {objects.map((obj) => (
+        <Link href={`/object/${obj.objectID}`}>
+          <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex cursor-pointer" onClick={() => window.location.href = `/object/${obj.objectID}`}>
+            <h2 className="truncate w-full" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
+            <h2>{obj.artistDisplayName}</h2>
+            <h2>{obj.objectDate}</h2>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function GridView({ objects }: { objects: MetObject[] }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+      {objects.map((obj) => (
+        <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center cursor-pointer" onClick={() => window.location.href = `/object/${obj.objectID}`}>
+          <h2 className="truncate w-full text-center" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
+          <h3>{obj.artistDisplayName}</h3>
+          <div className="w-full max-w-xs aspect-square relative">
+            <Link href={`/object/${obj.objectID}`}>
+              <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
+            </Link>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
 }

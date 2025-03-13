@@ -34,10 +34,8 @@ export default async function MetObjectPage({ params }: { params: { id: string }
                     <div className="relative w-full h-[70vh]">
                         <Image fill src={object.primaryImage} alt={object.title} style={{ objectFit: "contain" }} />
                     </div>
-                    {object.culture && object.period && (
-                        <p className="mt-4">Origin: {object.culture}, {object.period}</p>
-                    )}
-                    <p className="mt-4">Technique: {object.medium}</p>
+                    <ObjectOrigin object={object} />
+                    <p className="mt-4">Technique: {object.medium}.</p>
                 </div>
             </main >
 
@@ -47,4 +45,16 @@ export default async function MetObjectPage({ params }: { params: { id: string }
             </footer >
         </div >
     );
+}
+
+function ObjectOrigin({ object }: { object: MetObject }) {
+    if (object.culture && object.period) {
+        return <p>Origin: {object.culture}, {object.period}.</p>;
+    } else if (object.culture) {
+        return <p>Origin: {object.culture}.</p>;
+    } else if (object.period) {
+        return <p>Origin: {object.period}.</p>;
+    } else {
+        return null;
+    }
 }
