@@ -1,20 +1,13 @@
 "use client"
 
+import Image from 'next/image';
+import Link from 'next/link';
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from 'next/image';
 
 interface FetchObjectsResponse {
   objectIDs: number[];
   total: number;
-}
-
-interface FetchObjectResponse {
-  objectID: number;
-  primaryImageSmall: string;
-  department: string;
-  title: string;
-  artistDisplayName: string;
 }
 
 async function fetchObjects(departmentId: string): Promise<FetchObjectsResponse> {
@@ -28,14 +21,14 @@ async function fetchObjects(departmentId: string): Promise<FetchObjectsResponse>
   return data;
 }
 
-async function fetchObject(objectId: number): Promise<FetchObjectResponse> {
+async function fetchObject(objectId: number): Promise<MetObject> {
   const res = await fetch(
     `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`
   );
   if (!res.ok) {
     throw new Error('Failed to fetch object');
   }
-  const data: FetchObjectResponse = await res.json();
+  const data: MetObject = await res.json();
   return data;
 }
 
@@ -44,7 +37,7 @@ export default function DepartmentPage() {
   const id = params.id as string;
   const [objectIDs, setObjectIDs] = useState<number[]>([]);
   const [totalObjects, setTotalObjects] = useState(0);
-  const [currentObjects, setObjects] = useState<FetchObjectResponse[]>([]);
+  const [currentObjects, setCurrentObjects] = useState<MetObject[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
@@ -61,7 +54,7 @@ export default function DepartmentPage() {
 
   useEffect(() => {
     async function loadObjects() {
-      let objectsData: FetchObjectResponse[] = [];
+      let objectsData: MetObject[] = [];
       let startIdx = (currentPage - 1) * itemsPerPage;
       let endIdx = startIdx + itemsPerPage;
 
@@ -74,7 +67,7 @@ export default function DepartmentPage() {
         endIdx = startIdx + itemsPerPage;
       }
 
-      setObjects(objectsData.slice(0, itemsPerPage));
+      setCurrentObjects(objectsData.slice(0, itemsPerPage)); // Store objects in context
     }
     loadObjects();
   }, [currentPage, objectIDs]);
@@ -108,11 +101,13 @@ export default function DepartmentPage() {
         {/* Main Content */}
         <main className="flex-grow w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {currentObjects.map((obj) => (
-            <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center">
+            <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center cursor-pointer" onClick={() => window.location.href = `/object/${obj.objectID}`}>
               <h2 className="truncate w-full text-center" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
               <h3>{obj.artistDisplayName}</h3>
               <div className="w-full max-w-xs aspect-square relative">
-                <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
+                <Link href={`/object/${obj.objectID}`}>
+                  <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
+                </Link>
               </div>
             </div>
           ))}
@@ -120,9 +115,9 @@ export default function DepartmentPage() {
 
         {/* Footer */}
         <footer className="w-full flex justify-between py-4">
-          <button onClick={handlePrevPage} disabled={currentPage === 1} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Previous</button>
+          <button onClick={handlePrevPage} disabled={currentPage === 1} className="px-4 py-2 bg-gray-300 disabled:opacity-50">Previous</button>
           <p className="text-sm">{currentPage}</p>
-          <button onClick={handleNextPage} disabled={currentPage === totalPages} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">Next</button>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages} className="px-4 py-2 bg-gray-300 disabled:opacity-50">Next</button>
         </footer>
       </div>
     );
