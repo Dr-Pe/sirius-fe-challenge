@@ -34,14 +34,16 @@ export default async function MetObjectPage({ params }: { params: { id: string }
                     <div className="relative w-full h-[70vh]">
                         <Image fill src={object.primaryImage} alt={object.title} style={{ objectFit: "contain" }} />
                     </div>
-                    <p className="mt-4">Origin: {object.culture}</p>
+                    {object.culture && object.period && (
+                        <p className="mt-4">Origin: {object.culture}, {object.period}</p>
+                    )}
                     <p className="mt-4">Technique: {object.medium}</p>
                 </div>
             </main >
 
             {/* Footer */}
             < footer className="w-full flex justify-center py-4" >
-                <p className="text-sm">Footer Content</p>
+                <p className="text-sm">{object.creditLine}</p>
             </footer >
         </div >
     );
