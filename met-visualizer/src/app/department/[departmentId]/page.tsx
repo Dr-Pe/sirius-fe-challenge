@@ -143,11 +143,16 @@ function MetObjects({ departmentId, objects, isGridView }: { departmentId: strin
 function ListView({ departmentId, objects }: { departmentId: string, objects: MetObject[] }) {
   return (
     <div className="flex flex-col space-y-4">
+      <div className="bg-gray-200 p-4 shadow flex">
+        <h2 className="w-1/2 px-8 font-bold">Title</h2>
+        <h2 className="w-1/4 px-8 font-bold">Artist</h2>
+        <h2 className="w-1/4 px-2 font-bold">Date</h2>
+      </div>
       {objects.map((obj) => (
         <Link href={`${departmentId}/object/${obj.objectID}`}>
-          <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex cursor-pointer" onClick={() => window.location.href = `/object/${obj.objectID}`}>
-            <h2 className="truncate w-1/2 px-2" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
-            <h2 className="truncate w-1/4 px-2">{obj.artistDisplayName}</h2>
+          <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex cursor-pointer">
+            <h2 className="truncate w-1/2 px-8" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
+            <h2 className="truncate w-1/4 px-8">{obj.artistDisplayName}</h2>
             <h2 className="truncate w-1/4 px-2">{obj.objectDate}</h2>
           </div>
         </Link>
@@ -160,10 +165,10 @@ function GridView({ departmentId, objects }: { departmentId: string, objects: Me
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
       {objects.map((obj) => (
-        <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center cursor-pointer" onClick={() => window.location.href = `/object/${obj.objectID}`}>
+        <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex flex-col items-center">
           <h2 className="truncate w-full text-center" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
           <h3>{obj.artistDisplayName}</h3>
-          <div className="w-full max-w-xs aspect-square relative">
+          <div className="w-full max-w-xs aspect-square relative cursor-pointer">
             <Link href={`${departmentId}/object/${obj.objectID}`}>
               <Image fill src={obj.primaryImageSmall} alt={obj.title} style={{ objectFit: "cover" }} sizes="100vw, (mix-width:  + 1640px) 50vw, (min-width: 1024) 33vw" />
             </Link>
