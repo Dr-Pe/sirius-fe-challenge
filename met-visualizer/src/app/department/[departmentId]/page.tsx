@@ -1,5 +1,6 @@
 "use client"
 
+import { fetchMetObject } from "@/lib/fetchMetObject";
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from "next/navigation";
@@ -18,17 +19,6 @@ async function fetchObjects(departmentId: string): Promise<FetchObjectsResponse>
     throw new Error('Failed to fetch objects');
   }
   const data: FetchObjectsResponse = await res.json();
-  return data;
-}
-
-async function fetchObject(objectId: number): Promise<MetObject> {
-  const res = await fetch(
-    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`
-  );
-  if (!res.ok) {
-    throw new Error('Failed to fetch object');
-  }
-  const data: MetObject = await res.json();
   return data;
 }
 
@@ -55,7 +45,7 @@ export default function DepartmentPage() {
 
   useEffect(() => {
     async function loadObjects() {
-      const objectsData = await Promise.all(objectIDs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(fetchObject));
+      const objectsData = await Promise.all(objectIDs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(fetchMetObject));
       setCurrentObjects(objectsData.slice(0, itemsPerPage));
     }
     loadObjects();
@@ -92,11 +82,7 @@ export default function DepartmentPage() {
           <div className="w-full flex justify-between items-center mb-4">
             <input type="text" placeholder="Search..." className="p-2 border border-gray-300"
             // onChange={(e) => {
-            //   const searchTerm = e.target.value.toLowerCase();
-            //   const filteredObjects = objectIDs.filter(async (id) => {
-            //     const obj = await fetchObject(id);
-            //     return obj.title.toLowerCase().includes(searchTerm) || obj.artistDisplayName.toLowerCase().includes(searchTerm);
-            //   });
+            //   const filteredObjects = await fetchObjects(id);
             //   setCurrentObjects(filteredObjects);
             // }}
             />

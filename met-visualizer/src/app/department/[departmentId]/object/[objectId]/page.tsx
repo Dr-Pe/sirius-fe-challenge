@@ -1,20 +1,9 @@
+import { fetchMetObject } from "@/lib/fetchMetObject";
 import Image from "next/image";
-
-async function fetchObject(objectId: number): Promise<MetObject> {
-    const res = await fetch(
-        `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`
-    );
-    console.log(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`);
-    if (!res.ok) {
-        throw new Error('Failed to fetch object');
-    }
-    const data: MetObject = await res.json();
-    return data;
-}
 
 export default async function MetObjectPage({ params }: { params: { objectId: string } }) {
     const { objectId: id } = await params;
-    const object = await fetchObject(Number(id));
+    const object = await fetchMetObject(Number(id));
 
     return (
         <div className="min-h-screen flex flex-col items-center p-8 sm:p-20">
