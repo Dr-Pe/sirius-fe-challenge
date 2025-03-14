@@ -12,8 +12,8 @@ async function fetchObject(objectId: number): Promise<MetObject> {
     return data;
 }
 
-export default async function MetObjectPage({ params }: { params: { id: string } }) {
-    const { id } = await params;
+export default async function MetObjectPage({ params }: { params: { objectId: string } }) {
+    const { objectId: id } = await params;
     const object = await fetchObject(Number(id));
 
     return (
