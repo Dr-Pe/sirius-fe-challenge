@@ -12,7 +12,7 @@ interface FetchObjectsResponse {
 
 async function fetchObjects(departmentId: string): Promise<FetchObjectsResponse> {
   const res = await fetch(
-    `https://collectionapi.metmuseum.org/public/collection/v1/objects?departmentIds=${departmentId}`
+    `https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=${departmentId}&hasImages=true&q=*`
   );
   if (!res.ok) {
     throw new Error('Failed to fetch objects');
@@ -55,20 +55,8 @@ export default function DepartmentPage() {
 
   useEffect(() => {
     async function loadObjects() {
-      let objectsData: MetObject[] = [];
-      let startIdx = (currentPage - 1) * itemsPerPage;
-      let endIdx = startIdx + itemsPerPage;
-
-      while (objectsData.length < itemsPerPage && startIdx < objectIDs.length) {
-        const currentObjectIds = objectIDs.slice(startIdx, endIdx);
-        const fetchedObjects = await Promise.all(currentObjectIds.map(id => fetchObject(id)));
-        const validObjects = fetchedObjects.filter(obj => obj.primaryImageSmall);
-        objectsData = [...objectsData, ...validObjects];
-        startIdx = endIdx;
-        endIdx = startIdx + itemsPerPage;
-      }
-
-      setCurrentObjects(objectsData.slice(0, itemsPerPage)); // Store objects in context
+      const objectsData = await Promise.all(objectIDs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(fetchObject));
+      setCurrentObjects(objectsData.slice(0, itemsPerPage));
     }
     loadObjects();
   }, [currentPage, objectIDs]);
