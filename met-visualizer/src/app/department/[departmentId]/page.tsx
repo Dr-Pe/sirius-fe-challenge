@@ -11,9 +11,9 @@ interface FetchObjectsResponse {
   total: number;
 }
 
-async function fetchObjects(departmentId: string): Promise<FetchObjectsResponse> {
+async function fetchObjects(departmentId: string, query: string): Promise<FetchObjectsResponse> {
   const res = await fetch(
-    `https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=${departmentId}&hasImages=true&q=*`
+    `https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=${departmentId}&hasImages=true&q=${query}`
   );
   if (!res.ok) {
     throw new Error('Failed to fetch objects');
@@ -34,7 +34,7 @@ export default function DepartmentPage() {
 
   useEffect(() => {
     async function loadObjectIds() {
-      const { objectIDs, total } = await fetchObjects(id);
+      const { objectIDs, total } = await fetchObjects(id, '*');
       setObjectIDs(objectIDs);
       setTotalObjects(total);
     }
@@ -82,7 +82,7 @@ export default function DepartmentPage() {
           <div className="w-full flex justify-between items-center mb-4">
             <input type="text" placeholder="Search..." className="p-2 border border-gray-300"
             // onChange={(e) => {
-            //   const filteredObjects = await fetchObjects(id);
+            //   const filteredObjects = await fetchObjects(id, e.target.value);
             //   setCurrentObjects(filteredObjects);
             // }}
             />
