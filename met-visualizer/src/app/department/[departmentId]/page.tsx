@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchMetObject } from "@/lib/fetchMetObject";
+import { fetchMetObjectOrNull } from "@/lib/fetchMetObject";
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from "next/navigation";
@@ -46,8 +46,18 @@ export default function DepartmentPage() {
 
   useEffect(() => {
     async function loadObjects() {
-      const objectsData = await Promise.all(objectIDs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(fetchMetObject));
-      setCurrentObjects(objectsData.slice(0, itemsPerPage));
+      let objectsData: MetObject[] = [];
+      let startIdx = (currentPage - 1) * itemsPerPage;
+      let endIdx = startIdx + itemsPerPage;
+
+      while (objectsData.length < itemsPerPage && startIdx < objectIDs.length) {
+        const fetchedObjects = await Promise.all(objectIDs.slice(startIdx, endIdx).map(fetchMetObjectOrNull));
+        const validObjects = fetchedObjects.filter(obj => obj !== null && obj.primaryImageSmall) as MetObject[];
+        objectsData = [...objectsData, ...validObjects];
+        startIdx = endIdx;
+        endIdx = startIdx + itemsPerPage;
+      }
+      setCurrentObjects(objectsData.slice(0, itemsPerPage)); // Store objects in context
     }
     loadObjects();
   }, [currentPage, objectIDs]);

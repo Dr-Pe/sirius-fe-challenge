@@ -1,9 +1,9 @@
-import { fetchMetObject } from "@/lib/fetchMetObject";
+import { fetchMetObjectOrNull } from "@/lib/fetchMetObject";
 import Image from "next/image";
 
 export default async function MetObjectPage({ params }: { params: { objectId: string } }) {
     const { objectId: id } = await params;
-    const object = await fetchMetObject(Number(id));
+    const object = await fetchMetObjectOrNull(Number(id)) as MetObject;
 
     return (
         <div className="min-h-screen flex flex-col items-center p-8 sm:p-20">
