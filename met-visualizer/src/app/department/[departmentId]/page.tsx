@@ -31,15 +31,16 @@ export default function DepartmentPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
   const [isGridView, setIsGridView] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('*');
 
   useEffect(() => {
     async function loadObjectIds() {
-      const { objectIDs, total } = await fetchObjects(id, '*');
+      const { objectIDs, total } = await fetchObjects(id, searchQuery);
       setObjectIDs(objectIDs);
       setTotalObjects(total);
     }
     loadObjectIds();
-  }, [id]);
+  }, [id, searchQuery]);
 
   const totalPages = Math.ceil(totalObjects / itemsPerPage);
 
@@ -80,12 +81,7 @@ export default function DepartmentPage() {
         {/* Main Content */}
         <main className="flex-grow w-full">
           <div className="w-full flex justify-between items-center mb-4">
-            <input type="text" placeholder="Search..." className="p-2 border border-gray-300"
-            // onChange={(e) => {
-            //   const filteredObjects = await fetchObjects(id, e.target.value);
-            //   setCurrentObjects(filteredObjects);
-            // }}
-            />
+            <SearchBar setSearchQuery={setSearchQuery} />
             <ListGridButton isGridView={isGridView} setIsGridView={setIsGridView} />
           </div>
           <MetObjects departmentId={id} objects={currentObjects} isGridView={isGridView} />
@@ -100,6 +96,10 @@ export default function DepartmentPage() {
       </div>
     );
   }
+}
+
+function SearchBar({ setSearchQuery }: { setSearchQuery: (query: string) => void }) {
+  return <input type="text" placeholder="Search..." className="p-2 border border-gray-300" onChange={(e) => { setSearchQuery(e.target.value) }} />;
 }
 
 function ListGridButton({ isGridView, setIsGridView }: { isGridView: boolean, setIsGridView: (isGridView: boolean) => void }) {
