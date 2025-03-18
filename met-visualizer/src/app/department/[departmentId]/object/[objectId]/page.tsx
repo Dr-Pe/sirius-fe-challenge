@@ -1,8 +1,9 @@
 import { fetchMetObjectOrNull } from "@/lib/fetchMetObject";
 import Image from "next/image";
+import Link from "next/link";
 
-export default async function MetObjectPage({ params }: { params: { objectId: string } }) {
-    const { objectId: id } = await params;
+export default async function MetObjectPage({ params }: { params: { departmentId: string, objectId: string } }) {
+    const { departmentId: departmentId, objectId: id } = await params;
     const object = await fetchMetObjectOrNull(Number(id)) as MetObject;
 
     return (
@@ -10,7 +11,9 @@ export default async function MetObjectPage({ params }: { params: { objectId: st
             {/* Header */}
             <header className="w-full flex justify-center py-4">
                 <div className="flex flex-col items-center">
-                    <h1 className="text-2xl font-bold">{object.department}</h1>
+                    <Link href={`/department/${departmentId}`}>
+                        <h1 className="text-2xl font-bold">{object.department}</h1>
+                    </Link>
                 </div>
             </header>
 

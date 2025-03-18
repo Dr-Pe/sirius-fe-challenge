@@ -85,7 +85,9 @@ export default function DepartmentPage() {
       <div className="min-h-screen flex flex-col items-center p-8 sm:p-20">
         {/* Header */}
         <header className="w-full flex justify-center py-4">
-          <h1 className="text-2xl font-bold">{currentObjects[0].department}</h1>
+          <Link href="/">
+            <h1 className="text-2xl font-bold">{currentObjects[0].department}</h1>
+          </Link>
         </header>
 
         {/* Main Content */}

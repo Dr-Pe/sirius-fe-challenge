@@ -36,7 +36,9 @@ export default async function Home() {
 
       {/* Footer */}
       <footer className="w-full flex justify-center py-4">
-        <p className="text-sm">Footer Content</p>
+        <Link href="https://github.com/Dr-Pe">
+          <p className="text-sm">github.com/Dr-Pe</p>
+        </Link>
       </footer>
     </div>
   );
