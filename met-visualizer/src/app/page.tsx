@@ -1,3 +1,4 @@
+import { Department } from '@/types/Department';
 import Link from 'next/link';
 
 

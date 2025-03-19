@@ -1,10 +1,12 @@
 "use client"
 
 import { fetchMetObjectOrNull } from "@/lib/fetchMetObject";
+import { MetObject } from "@/types/MetObject";
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
 
 interface FetchObjectsResponse {
   objectIDs: number[];
@@ -135,8 +137,8 @@ function ListView({ departmentId, objects }: { departmentId: string, objects: Me
         <h2 className="w-1/4 px-2 font-bold">Date</h2>
       </div>
       {objects.map((obj) => (
-        <Link href={`${departmentId}/object/${obj.objectID}`}>
-          <div key={obj.objectID} className="bg-gray-100 p-4 shadow flex cursor-pointer">
+        <Link key={obj.objectID} href={`${departmentId}/object/${obj.objectID}`}>
+          <div className="bg-gray-100 p-4 shadow flex cursor-pointer">
             <h2 className="truncate w-1/2 px-8" dangerouslySetInnerHTML={{ __html: obj.title || "Untitled" }}></h2>
             <h2 className="truncate w-1/4 px-8">{obj.artistDisplayName}</h2>
             <h2 className="truncate w-1/4 px-2">{obj.objectDate}</h2>

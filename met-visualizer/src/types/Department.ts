@@ -1,4 +1,4 @@
-type Department = {
+export type Department = {
   departmentId: number;
   displayName: string;
 };

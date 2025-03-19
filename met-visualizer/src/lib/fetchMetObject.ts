@@ -1,3 +1,5 @@
+import { MetObject } from "@/types/MetObject";
+
 export async function fetchMetObjectOrNull(objectId: number): Promise<MetObject | null> {
     const res = await fetch(
         `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`

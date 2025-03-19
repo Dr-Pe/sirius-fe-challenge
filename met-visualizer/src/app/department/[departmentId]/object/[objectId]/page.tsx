@@ -1,8 +1,17 @@
 import { fetchMetObjectOrNull } from "@/lib/fetchMetObject";
+import { MetObject } from "@/types/MetObject";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function MetObjectPage({ params }: { params: { departmentId: string, objectId: string } }) {
+
+interface MetObjectPageProps {
+    params: Promise<{
+        departmentId: string;
+        objectId: string;
+    }>;
+}
+
+export default async function MetObjectPage({ params }: MetObjectPageProps) {
     const { departmentId: departmentId, objectId: id } = await params;
     const object = await fetchMetObjectOrNull(Number(id)) as MetObject;
 

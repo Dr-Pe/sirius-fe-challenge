@@ -1,4 +1,4 @@
-type MetObject = {
+export type MetObject = {
     objectID: number;
     isHighlight: boolean;
     accessionNumber: string;
